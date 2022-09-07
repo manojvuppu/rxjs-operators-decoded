@@ -1,13 +1,24 @@
 import { Component, OnInit, VERSION } from '@angular/core';
-import { map, Observable, Subject, tap, zip } from 'rxjs';
+import { map, mergeMap, Observable, Subject, tap, zip, take } from 'rxjs';
 
 type Durum = ['flat bread', 'meat', 'sauce', 'tomato', 'cabbage'];
+
+interface Order {
+  amount: number;
+  customerId: number;
+}
+interface Product {
+  product: Durum;
+  customerId: number;
+}
 
 let flatBreadCounter = 0;
 let meatCounter = 0;
 let sauceCounter = 0;
 let tomatoCounter = 0;
 let cabbageCounter = 0;
+
+let customerId = 0;
 
 @Component({
   selector: 'my-app',
@@ -18,6 +29,8 @@ export class AppComponent implements OnInit {
   name = 'Angular ' + VERSION.major;
 
   durum$: Observable<Durum>;
+  delivery$: Observable<Product>;
+  _order = new Subject<Order>();
   _flarBread = new Subject<'flat bread'>();
   _meat = new Subject<'meat'>();
   _souse = new Subject<'sauce'>();
@@ -25,35 +38,49 @@ export class AppComponent implements OnInit {
   _cabbage = new Subject<'cabbage'>();
 
   ngOnInit() {
-    this,
-      (this.durum$ = zip(
-        this._flarBread.pipe(
-          map((ing) => `${ing}${++flatBreadCounter}`),
-          tap(console.log)
-        ),
-        this._meat.pipe(
-          map((ing) => `${ing}${++meatCounter}`),
-          tap(console.log)
-        ),
-        this._souse.pipe(
-          map((ing) => `${ing}${++sauceCounter}`),
-          tap(console.log)
-        ),
-        this._tomato.pipe(
-          map((ing) => `${ing}${++tomatoCounter}`),
-          tap(console.log)
-        ),
-        this._cabbage.pipe(
-          map((ing) => `${ing}${++cabbageCounter}`),
-          tap(console.log)
+    this.durum$ = zip(
+      this._flarBread.pipe(
+        map((ing) => `${ing}${++flatBreadCounter}`),
+        tap(console.log)
+      ),
+      this._meat.pipe(
+        map((ing) => `${ing}${++meatCounter}`),
+        tap(console.log)
+      ),
+      this._souse.pipe(
+        map((ing) => `${ing}${++sauceCounter}`),
+        tap(console.log)
+      ),
+      this._tomato.pipe(
+        map((ing) => `${ing}${++tomatoCounter}`),
+        tap(console.log)
+      ),
+      this._cabbage.pipe(
+        map((ing) => `${ing}${++cabbageCounter}`),
+        tap(console.log)
+      )
+    ).pipe(tap((durum) => console.log('Enjoy' + durum)));
+
+    this.delivery$ = this._order.pipe(
+      tap((order) => console.log('New order ', order)),
+      mergeMap(({ amount, customerId }) =>
+        this.durum$.pipe(
+          take(amount),
+          map((durum) => ({ product: durum, customerId }))
         )
-      ).pipe(tap((durum) => console.log('Enjoy' + durum))));
+      ),
+      tap((product) => console.log('Delivered product ', product))
+    );
+  }
+
+  dispatchorder(){
+    const amount = Math.floor(Math.random() *3) + 1;
+    ++customerId;
+    this._order.next({amount,customerId})
   }
 }
 
-
 //https://www.youtube.com/watch?v=csRIMubWYnw&list=PLX7eV3JL9sfl8lRNZyzAu8YN-uqrgbhij&index=2&ab_channel=DecodedFrontend
-
 
 // combineLatest:   Whenever any input stream emits a value, it combines the latest values emitted by each input stream
 
