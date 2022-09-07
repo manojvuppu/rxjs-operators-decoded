@@ -53,3 +53,8 @@ export class AppComponent implements OnInit {
 
 
 //https://www.youtube.com/watch?v=csRIMubWYnw&list=PLX7eV3JL9sfl8lRNZyzAu8YN-uqrgbhij&index=2&ab_channel=DecodedFrontend
+
+
+// combineLatest:   Whenever any input stream emits a value, it combines the latest values emitted by each input stream
+
+//It waits for all input streams to have all emitted their n-th value❯As soon as this condition is met, it combines all those n-th values and emits the n-th combined value
