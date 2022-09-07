@@ -50,3 +50,6 @@ export class AppComponent implements OnInit {
       ).pipe(tap((durum) => console.log('Enjoy' + durum))));
   }
 }
+
+
+//https://www.youtube.com/watch?v=csRIMubWYnw&list=PLX7eV3JL9sfl8lRNZyzAu8YN-uqrgbhij&index=2&ab_channel=DecodedFrontend
