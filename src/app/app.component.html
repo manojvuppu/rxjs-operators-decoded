@@ -1,0 +1,17 @@
+<button (click)="_flarBread.next('flat bread')">Add Flat bread</button>
+<button (click)="_meat.next('meat')">Add Meat</button>
+<button (click)="_souse.next('sauce')">Add Souse</button>
+<button (click)="_tomato.next('tomato')">Add Tomato</button>
+<button (click)="_cabbage.next('cabbage')">Add Cabbage</button>
+
+
+<ng-container *ngIf="durum$ | async as durum">
+  <section *ngIf="durum?.length > 0">
+    <h4>Enjoy</h4>
+    <img src="https://miro.medium.com/max/429/1*P2QsjVc9-1sbXK1wXgU_Pg.jpeg" width="400">
+
+    <h5>Ingredients:</h5>
+    <pre>{{durum | json}}</pre>
+  
+  </section>
+</ng-container>
